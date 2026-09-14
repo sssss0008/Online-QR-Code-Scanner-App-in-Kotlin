@@ -4,7 +4,7 @@ import {
   Scan,
   Image as ImageIcon,
   Layers,
-  Sparkles,
+  PlusCircle,
   History,
   BarChart3,
   Sun,
@@ -37,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'scanner', label: 'Live Scanner', icon: Scan },
     { id: 'upload', label: 'Scan Image', icon: ImageIcon },
     { id: 'batch', label: 'Batch Scan', icon: Layers },
-    { id: 'generator', label: 'Create QR', icon: Sparkles },
+    { id: 'generator', label: 'Create QR', icon: PlusCircle },
     { id: 'history', label: 'History', icon: History, badge: historyCount },
     { id: 'stats', label: 'Analytics', icon: BarChart3 },
   ];

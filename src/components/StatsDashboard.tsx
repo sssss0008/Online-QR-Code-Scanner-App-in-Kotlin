@@ -8,7 +8,6 @@ import {
   ShieldCheck,
   TrendingUp,
   Layers,
-  Sparkles,
   CheckCircle2,
 } from 'lucide-react';
 import { ScanRecord } from '../types';

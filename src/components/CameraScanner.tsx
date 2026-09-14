@@ -11,7 +11,8 @@ import {
   Pause,
   AlertCircle,
   CheckCircle2,
-  Sparkles,
+  PlayCircle,
+  Coins,
   Wifi,
   Globe,
   User,
@@ -533,7 +534,7 @@ export const CameraScanner: React.FC<CameraScannerProps> = ({
       <div className="w-full max-w-xl mt-6 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-indigo-500" />
+            <PlayCircle className="w-4 h-4 text-indigo-500" />
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Quick Test Samples
             </h4>
@@ -622,7 +623,7 @@ export const CameraScanner: React.FC<CameraScannerProps> = ({
             className="flex items-center gap-2 p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500/60 bg-slate-50 dark:bg-slate-800/60 hover:bg-indigo-50/50 dark:hover:bg-slate-800 text-left transition-all group"
           >
             <div className="w-7 h-7 rounded-lg bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-3.5 h-3.5" />
+              <Coins className="w-3.5 h-3.5" />
             </div>
             <div className="min-w-0">
               <div className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">Crypto Wallet</div>

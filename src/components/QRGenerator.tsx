@@ -15,14 +15,56 @@ import {
   Copy,
   Check,
   Printer,
-  Sparkles,
   Palette,
   Sliders,
   Eye,
   RefreshCw,
+  Star,
+  Shield,
+  Link2,
 } from 'lucide-react';
 import { GeneratorConfig, QRContentType } from '../types';
 import { copyToClipboard } from '../utils/exporter';
+
+interface VectorBadge {
+  id: string;
+  label: string;
+  color: string;
+  svg: string;
+}
+
+const VECTOR_BADGES: Record<string, VectorBadge> = {
+  wifi: {
+    id: 'wifi',
+    label: 'Wi-Fi',
+    color: '#3b82f6',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>',
+  },
+  globe: {
+    id: 'globe',
+    label: 'Web',
+    color: '#10b981',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  },
+  star: {
+    id: 'star',
+    label: 'Star',
+    color: '#f59e0b',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  },
+  shield: {
+    id: 'shield',
+    label: 'Verified',
+    color: '#6366f1',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>',
+  },
+  link: {
+    id: 'link',
+    label: 'Link',
+    color: '#0ea5e9',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  },
+};
 
 interface QRGeneratorProps {
   initialContent?: string;
@@ -83,7 +125,7 @@ export const QRGenerator: React.FC<QRGeneratorProps> = ({
   const [bgColor, setBgColor] = useState('#ffffff');
   const [errorCorrection, setErrorCorrection] = useState<'L' | 'M' | 'Q' | 'H'>('H');
   const [margin, setMargin] = useState(2);
-  const [centerIcon, setCenterIcon] = useState<'none' | 'wifi' | 'globe' | 'star' | 'shield'>('none');
+  const [centerIcon, setCenterIcon] = useState<'none' | 'wifi' | 'globe' | 'star' | 'shield' | 'link'>('none');
   const [customLogoUrl, setCustomLogoUrl] = useState<string | null>(null);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
@@ -153,28 +195,8 @@ export const QRGenerator: React.FC<QRGeneratorProps> = ({
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Draw Center Icon if enabled
-        const drawIcon = (iconText: string, iconColor: string) => {
-          const size = canvas.width * 0.22;
-          const x = (canvas.width - size) / 2;
-          const y = (canvas.height - size) / 2;
-
-          // Background white circle or rounded rect for icon
-          ctx.fillStyle = bgColor;
-          ctx.beginPath();
-          ctx.arc(canvas.width / 2, canvas.height / 2, size * 0.65, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.lineWidth = 4;
-          ctx.strokeStyle = fgColor;
-          ctx.stroke();
-
-          // Icon emoji or text
-          ctx.font = `bold ${size * 0.6}px sans-serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = iconColor;
-          ctx.fillText(iconText, canvas.width / 2, canvas.height / 2 + 2);
+        const finishCanvas = () => {
+          setQrDataUrl(canvas.toDataURL('image/png'));
         };
 
         if (customLogoUrl) {
@@ -189,19 +211,43 @@ export const QRGenerator: React.FC<QRGeneratorProps> = ({
             ctx.arc(canvas.width / 2, canvas.height / 2, size * 0.65, 0, Math.PI * 2);
             ctx.fill();
 
+            ctx.lineWidth = Math.max(2, canvas.width * 0.008);
+            ctx.strokeStyle = fgColor;
+            ctx.stroke();
+
             ctx.drawImage(logoImg, x, y, size, size);
-            setQrDataUrl(canvas.toDataURL('image/png'));
+            finishCanvas();
           };
           logoImg.src = customLogoUrl;
           return;
         }
 
-        if (centerIcon === 'wifi') drawIcon('📶', '#3b82f6');
-        else if (centerIcon === 'globe') drawIcon('🌐', '#10b981');
-        else if (centerIcon === 'star') drawIcon('⭐', '#f59e0b');
-        else if (centerIcon === 'shield') drawIcon('🛡️', '#6366f1');
+        if (centerIcon !== 'none' && VECTOR_BADGES[centerIcon]) {
+          const badge = VECTOR_BADGES[centerIcon];
+          const size = canvas.width * 0.22;
 
-        setQrDataUrl(canvas.toDataURL('image/png'));
+          ctx.fillStyle = bgColor;
+          ctx.beginPath();
+          ctx.arc(canvas.width / 2, canvas.height / 2, size * 0.65, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.lineWidth = Math.max(2, canvas.width * 0.008);
+          ctx.strokeStyle = fgColor;
+          ctx.stroke();
+
+          const iconImg = new Image();
+          iconImg.onload = () => {
+            const iconSize = size * 0.72;
+            const ix = (canvas.width - iconSize) / 2;
+            const iy = (canvas.height - iconSize) / 2;
+            ctx.drawImage(iconImg, ix, iy, iconSize, iconSize);
+            finishCanvas();
+          };
+          iconImg.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(badge.svg);
+          return;
+        }
+
+        finishCanvas();
       }
     );
   }, [
@@ -226,24 +272,12 @@ export const QRGenerator: React.FC<QRGeneratorProps> = ({
 
   // Download High-Res PNG
   const downloadPNG = () => {
-    const raw = getRawPayload();
-    // Render high-res 1200px
-    QRCode.toDataURL(
-      raw,
-      {
-        width: 1200,
-        margin: margin,
-        color: { dark: fgColor, light: bgColor },
-        errorCorrectionLevel: errorCorrection,
-      },
-      (err, url) => {
-        if (err || !url) return;
-        const link = document.createElement('a');
-        link.download = `qrcode_${activeType}_${Date.now()}.png`;
-        link.href = url;
-        link.click();
-      }
-    );
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.download = `qrcode_${activeType}_${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   };
 
   // Download SVG
@@ -259,7 +293,28 @@ export const QRGenerator: React.FC<QRGeneratorProps> = ({
       },
       (err, svgString) => {
         if (err || !svgString) return;
-        const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        let finalSvg = svgString;
+        if (centerIcon !== 'none' && VECTOR_BADGES[centerIcon]) {
+          const match = svgString.match(/viewBox="0 0 (\d+) (\d+)"/);
+          if (match) {
+            const w = parseInt(match[1], 10);
+            const h = parseInt(match[2], 10);
+            const cx = w / 2;
+            const cy = h / 2;
+            const r = w * 0.12;
+            const innerContent = VECTOR_BADGES[centerIcon].svg
+              .replace(/<svg[^>]*>/, '')
+              .replace('</svg>', '');
+            const iconBadge = `
+              <circle cx="${cx}" cy="${cy}" r="${r}" fill="${bgColor}" stroke="${fgColor}" stroke-width="${Math.max(1, w * 0.008)}" />
+              <g transform="translate(${cx - r * 0.65}, ${cy - r * 0.65}) scale(${(r * 1.3) / 24})">
+                ${innerContent}
+              </g>
+            `;
+            finalSvg = finalSvg.replace('</svg>', `${iconBadge}</svg>`);
+          }
+        }
+        const blob = new Blob([finalSvg], { type: 'image/svg+xml;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.download = `qrcode_${activeType}_${Date.now()}.svg`;
@@ -719,31 +774,37 @@ export const QRGenerator: React.FC<QRGeneratorProps> = ({
           {/* Center Icon Overlay */}
           <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
             <span className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
-              Center Icon Badge:
+              Center Vector Icon Badge:
             </span>
             <div className="flex flex-wrap gap-2">
               {[
                 { id: 'none', label: 'None' },
-                { id: 'wifi', label: 'Wi-Fi 📶' },
-                { id: 'globe', label: 'Web 🌐' },
-                { id: 'star', label: 'Star ⭐' },
-                { id: 'shield', label: 'Verified 🛡️' },
-              ].map((badge) => (
-                <button
-                  key={badge.id}
-                  onClick={() => {
-                    setCenterIcon(badge.id as any);
-                    setCustomLogoUrl(null);
-                  }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${
-                    centerIcon === badge.id && !customLogoUrl
-                      ? 'bg-indigo-600 text-white border-indigo-600'
-                      : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
-                >
-                  {badge.label}
-                </button>
-              ))}
+                { id: 'wifi', label: 'Wi-Fi', icon: Wifi },
+                { id: 'globe', label: 'Web', icon: Globe },
+                { id: 'star', label: 'Star', icon: Star },
+                { id: 'shield', label: 'Verified', icon: Shield },
+                { id: 'link', label: 'Link', icon: Link2 },
+              ].map((badge) => {
+                const BadgeIcon = (badge as any).icon;
+                const isSelected = centerIcon === badge.id && !customLogoUrl;
+                return (
+                  <button
+                    key={badge.id}
+                    onClick={() => {
+                      setCenterIcon(badge.id as any);
+                      setCustomLogoUrl(null);
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${
+                      isSelected
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                        : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    {BadgeIcon && <BadgeIcon className="w-3.5 h-3.5" />}
+                    <span>{badge.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

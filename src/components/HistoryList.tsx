@@ -20,7 +20,6 @@ import {
   Coins,
   FileText,
   Clock,
-  Sparkles,
   Tag,
   AlertCircle,
 } from 'lucide-react';
@@ -204,7 +203,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
         {[
           { id: 'all', label: 'All Scans', count: records.length },
-          { id: 'favorites', label: 'Starred ★', count: records.filter((r) => r.isFavorite).length },
+          { id: 'favorites', label: 'Starred', icon: Star, count: records.filter((r) => r.isFavorite).length },
           { id: 'url', label: 'Websites' },
           { id: 'wifi', label: 'Wi-Fi' },
           { id: 'contact', label: 'Contacts' },
@@ -213,6 +212,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
           { id: 'text', label: 'Text / Barcode' },
         ].map((chip) => {
           const isActive = activeFilter === chip.id;
+          const ChipIcon = (chip as any).icon;
           return (
             <button
               key={chip.id}
@@ -223,6 +223,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
                   : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
               }`}
             >
+              {ChipIcon && <ChipIcon className="w-3.5 h-3.5 text-amber-500 fill-current" />}
               <span>{chip.label}</span>
               {typeof chip.count === 'number' && (
                 <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-white/20 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-700'}`}>

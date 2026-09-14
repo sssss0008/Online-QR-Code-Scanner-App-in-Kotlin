@@ -12,7 +12,7 @@ import {
   Upload,
   Keyboard,
   Sliders,
-  Sparkles,
+  ScanLine,
   Play,
   Check,
 } from 'lucide-react';
@@ -229,7 +229,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             {/* Show Laser */}
             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800/80">
               <div className="flex items-center gap-2.5">
-                <Sparkles className="w-4 h-4 text-cyan-500" />
+                <ScanLine className="w-4 h-4 text-cyan-500" />
                 <div>
                   <div className="font-semibold text-slate-800 dark:text-slate-200">
                     Animated Laser Guide

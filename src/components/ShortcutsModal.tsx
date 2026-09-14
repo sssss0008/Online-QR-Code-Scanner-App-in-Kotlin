@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Keyboard, Shield, Zap, Sparkles, CheckCircle2 } from 'lucide-react';
+import { X, Keyboard, Shield, Zap, CheckCircle2 } from 'lucide-react';
 
 interface ShortcutsModalProps {
   onClose: () => void;

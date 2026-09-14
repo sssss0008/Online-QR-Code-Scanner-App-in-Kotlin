@@ -11,7 +11,6 @@ import {
   Pause,
   Filter,
   CheckCircle2,
-  Sparkles,
   ExternalLink,
 } from 'lucide-react';
 import { AppSettings, ScanRecord } from '../types';

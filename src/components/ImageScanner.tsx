@@ -6,7 +6,6 @@ import {
   ClipboardPaste,
   CheckCircle2,
   AlertCircle,
-  Sparkles,
   Trash2,
   RefreshCw,
 } from 'lucide-react';
