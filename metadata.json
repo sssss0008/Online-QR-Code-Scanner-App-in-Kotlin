@@ -1,0 +1,6 @@
+{
+  "name": "QR Master Pro - Production QR & Barcode Scanner",
+  "description": "Production-level QR code scanner, generator, batch processor, and safety inspector with rich data parsing, camera controls, dark mode, and export tools.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
